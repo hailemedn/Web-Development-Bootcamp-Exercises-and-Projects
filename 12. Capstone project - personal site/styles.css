@@ -1,0 +1,35 @@
+.body {
+    background-color: #FAF9F6;
+}
+
+.circle {
+    border-radius: 45%;
+}
+
+.orange {
+    color: orangered;
+    font-weight: 400;
+}
+
+.black {
+    color: black;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.icon-square {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+}
+
+.b-example-divider {
+    width: 100%;
+    height: 3rem;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 0.5em 1.5em rgba(0, 0, 0, .1), inset 0 0.125em 0.5em rgba(0, 0, 0, .15);
+}
