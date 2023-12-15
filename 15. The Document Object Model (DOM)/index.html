@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Haile</h1>
+    <p>original text</p>
+    
+
+    <!--internal Js-->
+    <script>
+        alert("Alert using internal JS")
+    </script>
+
+    <!--external Js-->
+    <!--Best practice to put at the end inside the body tag-->
+    <script src="index.js"></script>
+    <script>
+        document.firstElementChild.lastElementChild.firstElementChild.innerHTML = "I accessed h1 element through the Dom"
+        document.querySelector("p").innerHTML = "Modified Text"
+    </script>
+</body>
+</html>
