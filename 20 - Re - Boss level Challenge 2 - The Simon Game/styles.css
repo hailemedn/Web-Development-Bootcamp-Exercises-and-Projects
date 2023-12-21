@@ -1,0 +1,53 @@
+body {
+    background-color: rgb(50, 36, 63);
+    text-align: center;
+}
+
+.title {
+    color: white;
+    font-size: 4rem;
+    font-family: 'VT323', monospace;
+}
+
+.btn {
+    height: 250px;
+    width: 250px;
+    border-radius: 15px;
+    border: solid 6px white;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+    padding: 1rem;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+.red {
+    background-color: red;
+}
+
+.blue {
+    background-color: blue;
+}
+
+.green {
+    background-color: green;
+}
+
+.pressed {
+    background-color: rgb(255, 255, 255);
+}
+
+.success {
+    background-color: rgb(95, 201, 83);
+}
+
+.wrong {
+    background-color: rgb(255, 0, 0);
+}
