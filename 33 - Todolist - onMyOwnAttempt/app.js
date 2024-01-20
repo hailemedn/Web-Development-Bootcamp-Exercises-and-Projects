@@ -35,9 +35,15 @@ app.post("/", (req, res) => {
 });
 
 app.post("/delete", (req, res) => {
-    itemIndex = req.body.itemIndex;
-    lists.splice(itemIndex, 1)
-    res.redirect("/")
+    const list = req.body.list
+    const itemIndex = req.body.itemIndex;
+    if (list === "Work") {
+        workList.splice(itemIndex, 1);
+        res.redirect("/work");
+    } else {
+        lists.splice(itemIndex, 1);
+        res.redirect("/");
+    }
 })
 
 app.listen("3000", () => {
