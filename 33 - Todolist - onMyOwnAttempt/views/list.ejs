@@ -1,3 +1,32 @@
 <%- include("header") -%>
-<h1>I am list.ejs</h1>
+
+<div class="d-flex flex-column p-4 gap-4 py-md-5 align-items-center justify-content-center">
+    <h1><%= listTitle %></h1>
+    <div class="list-group">
+        <% lists.forEach(list => { %>
+            <label class="list-group-item d-flex gap-3">
+                <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;">
+                <span class="pt-1 form-checked-content">
+                  <strong><%= list %></strong>
+                  <small class="d-block text-body-secondary">
+                    <svg class="bi me-1" width="1em" height="1em"><use xlink:href="#calendar-event"></use></svg>
+                  </small>
+                </span>
+              </label>
+      <%  }); %>
+
+
+      <label class="list-group-item d-flex gap-3 bg-body-tertiary">
+        <input class="form-check-input form-check-input-placeholder bg-body-tertiary flex-shrink-0 pe-none" disabled="" type="checkbox" value="" style="font-size: 1.375em;">
+        <span class="pt-1 form-checked-content">
+          <span contenteditable="true" class="w-100">Add new task...</span>
+          <small class="d-block text-body-secondary">
+            <svg class="bi me-1" width="1em" height="1em"><use xlink:href="#list-check"></use></svg>
+            Choose list...
+          </small>
+        </span>
+      </label>
+    </div>
+  </div>
+
 <%- include("footer") -%>
