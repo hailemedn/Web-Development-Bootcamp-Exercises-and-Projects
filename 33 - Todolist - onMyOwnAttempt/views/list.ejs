@@ -1,32 +1,47 @@
 <%- include("header") -%>
 
+
 <div class="d-flex flex-column p-4 gap-4 py-md-5 align-items-center justify-content-center">
-    <h1><%= listTitle %></h1>
-    <div class="list-group">
-        <% lists.forEach(list => { %>
-            <label class="list-group-item d-flex gap-3">
-                <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;">
-                <span class="pt-1 form-checked-content">
-                  <strong><%= list %></strong>
-                  <small class="d-block text-body-secondary">
-                    <svg class="bi me-1" width="1em" height="1em"><use xlink:href="#calendar-event"></use></svg>
-                  </small>
-                </span>
+    <form action="/delete" method="post">
+      <h1><%= listTitle %></h1>
+      <div class="list-group">
+          <% lists.forEach(list => { %>
+              <label class="list-group-item d-flex gap-3">
+                  <input class="form-check-input flex-shrink-0" type="checkbox" onChange="this.form.submit()" name="itemIndex" value="<%= lists.indexOf(list) %>" style="font-size: 1.375em;">
+                  <span class="pt-1 form-checked-content">
+                    <p><%= list %></p>
+                    <small class="d-block text-body-secondary">
+                      <svg class="bi me-1" width="1em" height="1em"><use xlink:href="#calendar-event"></use></svg>
+                    </small>
+                  </span>
               </label>
-      <%  }); %>
+        <%  }); %>
+    </form>
 
 
       <label class="list-group-item d-flex gap-3 bg-body-tertiary">
-        <input class="form-check-input form-check-input-placeholder bg-body-tertiary flex-shrink-0 pe-none" disabled="" type="checkbox" value="" style="font-size: 1.375em;">
-        <span class="pt-1 form-checked-content">
-          <span contenteditable="true" class="w-100">Add new task...</span>
-          <small class="d-block text-body-secondary">
-            <svg class="bi me-1" width="1em" height="1em"><use xlink:href="#list-check"></use></svg>
-            Choose list...
-          </small>
-        </span>
+        <form action="/" method="post" name="myForm" onsubmit="return validateForm()">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="floatingNewItem" placeholder="Password" name="newItem">
+            <label for="floatingNewItem">Add a new item</label>
+          </div>
+          <button class="btn btn-primary rounded-circle p-2 lh-1" type="submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+            </svg>
+          </button>
+        </form>
       </label>
     </div>
   </div>
 
+  <script>
+    function validateForm() {
+      var x = document.forms["myForm"]["newItem"].value;
+      if (x == "") {
+        alert("Please Insert an item!");
+        return false;
+    }
+  }
+  </script>
 <%- include("footer") -%>

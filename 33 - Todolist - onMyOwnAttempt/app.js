@@ -15,6 +15,18 @@ app.get("/", (req, res) => {
         lists: lists});
 });
 
+app.post("/", (req, res) => {
+    const newItem = req.body.newItem;
+    lists.push(newItem);
+    res.redirect("/");
+});
+
+app.post("/delete", (req, res) => {
+    itemIndex = req.body.itemIndex;
+    lists.splice(itemIndex, 1)
+    res.redirect("/")
+})
+
 app.listen("3000", () => {
     console.log("Server started at port 3000!");
 });
