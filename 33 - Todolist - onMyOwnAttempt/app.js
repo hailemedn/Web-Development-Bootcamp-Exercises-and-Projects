@@ -8,6 +8,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 const lists = ["Welcome to 2Do", "Enter your tasks below", "<-- Click here to delete"]
+const workList = ["Welcome to 2Do", "Enter your tasks below", "<-- Click here to delete"]
 
 app.get("/", (req, res) => {
     res.render("list", {
@@ -15,10 +16,22 @@ app.get("/", (req, res) => {
         lists: lists});
 });
 
+app.get("/work", (req, res) => {
+    res.render("list", {listTitle: "Work", lists: workList});
+});
+
 app.post("/", (req, res) => {
     const newItem = req.body.newItem;
-    lists.push(newItem);
-    res.redirect("/");
+    const list = req.body.list;
+    console.log(list)
+    if(list === "Work") {
+        workList.push(newItem);
+        res.redirect("/" + list);
+    }
+    else {
+        lists.push(newItem);
+        res.redirect("/");
+    }
 });
 
 app.post("/delete", (req, res) => {

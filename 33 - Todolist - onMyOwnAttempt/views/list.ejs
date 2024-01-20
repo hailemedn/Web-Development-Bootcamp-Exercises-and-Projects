@@ -3,26 +3,24 @@
 
 <div class="d-flex flex-column p-4 gap-4 py-md-5 align-items-center justify-content-center">
     <form action="/delete" method="post">
-      <h1><%= listTitle %></h1>
+      <h1 class="display-5 fw-bold text-body-emphasis p-4"><%= listTitle %></h1>
       <div class="list-group">
           <% lists.forEach(list => { %>
               <label class="list-group-item d-flex gap-3">
                   <input class="form-check-input flex-shrink-0" type="checkbox" onChange="this.form.submit()" name="itemIndex" value="<%= lists.indexOf(list) %>" style="font-size: 1.375em;">
                   <span class="pt-1 form-checked-content">
                     <p><%= list %></p>
-                    <small class="d-block text-body-secondary">
-                      <svg class="bi me-1" width="1em" height="1em"><use xlink:href="#calendar-event"></use></svg>
-                    </small>
                   </span>
               </label>
         <%  }); %>
     </form>
 
 
-      <label class="list-group-item d-flex gap-3 bg-body-tertiary">
+      <label class="list-group-item d-flex gap-3 bg-body-tertiary mb-5">
         <form action="/" method="post" name="myForm" onsubmit="return validateForm()">
           <div class="form-floating">
-            <input type="text" class="form-control" id="floatingNewItem" placeholder="Password" name="newItem">
+            <input type="text" class="form-control" id="floatingNewItem" placeholder="Add a new item" name="newItem">
+            <input type="hidden" name="list" value="<%= listTitle %>">
             <label for="floatingNewItem">Add a new item</label>
           </div>
           <button class="btn btn-primary rounded-circle p-2 lh-1" type="submit">
