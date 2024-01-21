@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const _ = require("lodash");
 
 const app = express();
 
@@ -48,7 +49,7 @@ async function main() {
   });
 
   app.get("/:customList", async (req, res) => {
-    const customList = req.params.customList;
+    const customList = _.capitalize(req.params.customList);
     const foundList = await List.findOne({ name: customList }).exec();
     if (foundList === null) {
       console.log("List doesn't exist");
@@ -67,22 +68,29 @@ async function main() {
   app.post("/", async (req, res) => {
     const currentList = req.body.list;
     const newItem = new Item({
-        name: req.body.newItem,
-      });
+      name: req.body.newItem,
+    });
     if (currentList === "Today") {
       await newItem.save();
       res.redirect("/");
     } else {
-        const foundList = await List.findOne({name: currentList});
-        foundList.items.push(newItem);
-        await foundList.save();
-        res.redirect("/" + currentList);
+      const foundList = await List.findOne({ name: currentList });
+      foundList.items.push(newItem);
+      await foundList.save();
+      res.redirect("/" + currentList);
     }
   });
 
   app.post("/delete", async (req, res) => {
-    await Item.deleteOne({ _id: req.body.itemId });
-    res.redirect("/");
+    const currentList = req.body.list;
+    const itemId = req.body.itemId;
+    if (currentList === "Today") {
+      await Item.deleteOne({ _id: req.body.itemId }).exec();
+      res.redirect("/");
+    } else {
+        await List.findOneAndUpdate({name: currentList}, {$pull : {items: {_id: itemId}}});
+        res.redirect("/" + currentList);
+    }
   });
 }
 
