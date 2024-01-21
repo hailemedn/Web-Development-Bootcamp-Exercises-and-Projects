@@ -4,62 +4,88 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-main().catch(err => {
-    console.log(err);
+main().catch((err) => {
+  console.log(err);
 });
 
 async function main() {
-    await mongoose.connect('mongodb://127.0.0.1:27017/todolistDB2');
+  await mongoose.connect("mongodb://127.0.0.1:27017/todolistDB2");
 
-    const itemSchema = {
-        name: String
-    }
-    const Item = mongoose.model("Item", itemSchema);
+  const itemSchema = {
+    name: String,
+  };
+  const Item = mongoose.model("Item", itemSchema);
 
-    const item1 = new Item({
-        name: "Welcome to 2Do"
-    })
-    const item2 = new Item({
-        name: "Insert new items below"
-    })
-    const item3 = new Item({
-        name: "<--- Click here to delete"
-    })
+  const listSchema = {
+    name: String,
+    items: [itemSchema],
+  };
 
-    defaultItems = [item1, item2, item3];
+  const List = mongoose.model("List", listSchema);
 
+  const item1 = new Item({
+    name: "Welcome to 2Do",
+  });
+  const item2 = new Item({
+    name: "Insert new items below",
+  });
+  const item3 = new Item({
+    name: "<--- Click here to delete",
+  });
+
+  defaultItems = [item1, item2, item3];
+
+  app.get("/", async (req, res) => {
     const foundList = await Item.find({});
-    if(foundList.length === 0) {
-        await Item.insertMany(defaultItems);
-       }
+    if (foundList.length === 0) {
+      await Item.insertMany(defaultItems);
+    }
+    res.render("list", { listTitle: "Today", foundList: foundList });
+  });
 
-    app.get("/" , async (req, res) => {
-       const foundList = await Item.find({});
-       res.render("list", {listTitle: "Today", foundList: foundList});
-    });
+  app.get("/:customList", async (req, res) => {
+    const customList = req.params.customList;
+    const foundList = await List.findOne({ name: customList }).exec();
+    if (foundList === null) {
+      console.log("List doesn't exist");
+      const list = new List({
+        name: customList,
+        items: defaultItems,
+      });
+      await list.save();
+      res.redirect("/" + customList);
+    } else {
+      console.log("List Exists");
+      res.render("list", { listTitle: customList, foundList: foundList.items });
+    }
+  });
 
-    app.post("/", async (req, res) => {
-        const newItem = new Item({
-            name: req.body.newItem
-        });
-        await newItem.save();
-        res.redirect("/");
-    });
+  app.post("/", async (req, res) => {
+    const currentList = req.body.list;
+    const newItem = new Item({
+        name: req.body.newItem,
+      });
+    if (currentList === "Today") {
+      await newItem.save();
+      res.redirect("/");
+    } else {
+        const foundList = await List.findOne({name: currentList});
+        foundList.items.push(newItem);
+        await foundList.save();
+        res.redirect("/" + currentList);
+    }
+  });
 
-    app.post("/delete", async (req, res) => {
-        await Item.deleteOne({_id: req.body.itemId});
-        res.redirect("/");
-    });
-
+  app.post("/delete", async (req, res) => {
+    await Item.deleteOne({ _id: req.body.itemId });
+    res.redirect("/");
+  });
 }
 
-
-
 app.listen("3000", () => {
-    console.log("Server started at port 3000!")
-})
+  console.log("Server started at port 3000!");
+});
