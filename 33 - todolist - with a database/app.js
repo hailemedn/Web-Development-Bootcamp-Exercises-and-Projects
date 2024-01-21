@@ -33,12 +33,13 @@ async function main() {
 
     defaultItems = [item1, item2, item3];
 
+    const foundList = await Item.find({});
+    if(foundList.length === 0) {
+        await Item.insertMany(defaultItems);
+       }
 
     app.get("/" , async (req, res) => {
        const foundList = await Item.find({});
-       if(foundList.length === 0) {
-        await Item.insertMany(defaultItems);
-       }
        res.render("list", {listTitle: "Today", foundList: foundList});
     });
 
@@ -53,7 +54,7 @@ async function main() {
     app.post("/delete", async (req, res) => {
         await Item.deleteOne({_id: req.body.itemId});
         res.redirect("/");
-    })
+    });
 
 }
 
