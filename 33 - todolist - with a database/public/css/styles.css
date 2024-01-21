@@ -16,7 +16,20 @@ button.rounded-circle {
     margin: 1rem auto;
 }
 
-form[name="myForm"] {
+form[name="myForm"], form.input-container {
     display: flex;
     gap: 2rem;
+}
+
+.row:nth-child(1) {
+    flex: 1;
+}
+
+.row:nth-child(2) {
+    flex: 2;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
 }

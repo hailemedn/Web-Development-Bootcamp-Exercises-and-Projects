@@ -41,16 +41,18 @@ async function main() {
   defaultItems = [item1, item2, item3];
 
   app.get("/", async (req, res) => {
+    const foundCustomList = await List.find({});
     const foundList = await Item.find({});
     if (foundList.length === 0) {
       await Item.insertMany(defaultItems);
     }
-    res.render("list", { listTitle: "Today", foundList: foundList });
+    res.render("list", { listTitle: "Today", foundList: foundList, foundCustomList: foundCustomList });
   });
 
   app.get("/:customList", async (req, res) => {
     const customList = _.capitalize(req.params.customList);
     const foundList = await List.findOne({ name: customList }).exec();
+    const foundCustomList = await List.find({});
     if (foundList === null) {
       console.log("List doesn't exist");
       const list = new List({
@@ -61,7 +63,8 @@ async function main() {
       res.redirect("/" + customList);
     } else {
       console.log("List Exists");
-      res.render("list", { listTitle: customList, foundList: foundList.items });
+      console.log(foundList);
+      res.render("list", { listTitle: customList, foundList: foundList.items, foundCustomList: foundCustomList });
     }
   });
 
