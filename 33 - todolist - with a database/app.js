@@ -46,7 +46,11 @@ async function main() {
     if (foundList.length === 0) {
       await Item.insertMany(defaultItems);
     }
-    res.render("list", { listTitle: "Today", foundList: foundList, foundCustomList: foundCustomList });
+    res.render("list", {
+      listTitle: "Today",
+      foundList: foundList,
+      foundCustomList: foundCustomList,
+    });
   });
 
   app.get("/:customList", async (req, res) => {
@@ -64,7 +68,11 @@ async function main() {
     } else {
       console.log("List Exists");
       console.log(foundList);
-      res.render("list", { listTitle: customList, foundList: foundList.items, foundCustomList: foundCustomList });
+      res.render("list", {
+        listTitle: customList,
+        foundList: foundList.items,
+        foundCustomList: foundCustomList,
+      });
     }
   });
 
@@ -91,8 +99,27 @@ async function main() {
       await Item.deleteOne({ _id: req.body.itemId }).exec();
       res.redirect("/");
     } else {
-        await List.findOneAndUpdate({name: currentList}, {$pull : {items: {_id: itemId}}});
-        res.redirect("/" + currentList);
+      await List.findOneAndUpdate(
+        { name: currentList },
+        { $pull: { items: { _id: itemId } } }
+      );
+      res.redirect("/" + currentList);
+    }
+  });
+
+  app.post("/newList", async (req, res) => {
+    const newList = _.capitalize(req.body.newList);
+    res.redirect("/" + newList);
+  });
+
+  app.post("/deleteList", async (req, res) => {
+    const idOfListToDelete = req.body.listId;
+    const currentList = req.body.currentList;
+    await List.findByIdAndDelete(idOfListToDelete);
+    if (currentList === "Today") {
+      res.redirect("/");
+    } else {
+      res.redirect("/" + currentList);
     }
   });
 }
