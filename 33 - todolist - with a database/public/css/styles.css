@@ -1,0 +1,22 @@
+footer {
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.form-floating input {
+    border: none;
+}
+
+button.rounded-circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem auto;
+}
+
+form[name="myForm"] {
+    display: flex;
+    gap: 2rem;
+}

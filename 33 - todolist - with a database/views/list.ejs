@@ -1,0 +1,43 @@
+<%- include('header') %>
+<div class="d-flex flex-column p-4 gap-4 py-md-5 align-items-center justify-content-center">
+    <form action="/delete" method="post">
+      <h1 class="display-5 fw-bold text-body-emphasis p-4"><%= listTitle %></h1>
+      <div class="list-group">
+        <% foundList.forEach(list => { %>
+            <label class="list-group-item d-flex gap-3">
+                  <input class="form-check-input flex-shrink-0" type="checkbox" onChange="this.form.submit()" name="itemId" value="<%= list._id %>" style="font-size: 1.375em;">
+                  <span class="pt-1 form-checked-content">
+                    <p><%= list.name %></p>
+                  </span>
+              </label>
+      <%  }); %>
+        <input type="hidden" name="list" value="<%= listTitle %>">
+    </form>
+
+      <label class="list-group-item d-flex gap-3 bg-body-tertiary mb-5">
+        <form action="/" method="post" name="myForm" onsubmit="return validateForm()">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="floatingNewItem" placeholder="Add a new item" name="newItem">
+            <input type="hidden" name="list" value="<%= listTitle %>">
+            <label for="floatingNewItem">Add a new item</label>
+          </div>
+          <button class="btn btn-primary rounded-circle p-2 lh-1" type="submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+            </svg>
+          </button>
+        </form>
+      </label>
+    </div>
+  </div>
+
+  <script>
+    function validateForm() {
+      var x = document.forms["myForm"]["newItem"].value;
+      if (x == "") {
+        alert("Please Insert an item!");
+        return false;
+    }
+  }
+  </script>
+<%- include('footer') %>
