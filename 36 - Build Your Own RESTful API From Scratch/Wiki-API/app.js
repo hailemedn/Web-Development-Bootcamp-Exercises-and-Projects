@@ -91,10 +91,32 @@ app.route("/articles/:articleTitle")
         await Article.updateOne(
             {title: req.params.articleTitle},
             {title: req.body.title, content: req.body.content},
+            {overwrite: true},
         );
         res.send("Successfully updated");
     } catch (err) {
         res.send(err);
+    }
+})
+
+.patch(async (req, res) => {
+    try {
+        await Article.updateOne(
+            {title: req.params.articleTitle},
+            {$set: req.body}
+        )
+        res.send("Successfully updated article")
+    } catch (err) {
+        res.send(err);
+    }
+})
+
+.delete(async (req, res) => {
+    try{
+        const foundArticle = await Article.deleteOne({title: req.params.articleTitle});
+        res.send("Successfully deleted article");
+    } catch (err){
+        console.log(err);
     }
 });
 
