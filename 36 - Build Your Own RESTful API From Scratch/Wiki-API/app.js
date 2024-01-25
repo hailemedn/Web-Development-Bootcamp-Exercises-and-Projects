@@ -32,7 +32,10 @@ const articleSchema = new mongoose.Schema({
 
 const Article = mongoose.model("Article", articleSchema);
 
-app.get("/articles", async (req, res) => {
+// Requests targeting all articles
+app.route("/articles")
+
+.get(async (req, res) => {
     try {
         const foundArticles = await Article.find({});
         res.send(foundArticles);
@@ -41,10 +44,7 @@ app.get("/articles", async (req, res) => {
     }
 })
 
-app.post("/articles", async (req, res) => {
-    console.log(req.body.title);
-    console.log(req.body.content);
-
+.post(async (req, res) => {
     const newArticle = new Article({
         title: req.body.title,
         content: req.body.content
@@ -52,13 +52,54 @@ app.post("/articles", async (req, res) => {
 
     try {
         await newArticle.save();
+        res.send("Successfully added a new article");
     } catch (err) {
         console.log("Unable to save, Error:" + err);
+        res.send(err);
     }
 })
+
+.delete(async (req, res) => {
+    try {
+        await Article.deleteMany({});
+        res.send("Successfully deleted all articles.");
+    } catch (err) {
+        res.send(err);
+    }
+});
+
+
+// Requesting targeting a specific article.
+app.route("/articles/:articleTitle")
+
+.get(async (req, res) => {
+    try{
+        const foundArticle = await Article.findOne({title: req.params.articleTitle});
+        if(foundArticle) {
+            res.send(foundArticle);
+        }
+        else {
+            res.send("No Article matching that title was found");
+        }
+    } catch(err) {
+        res.send(err);
+    }
+})
+
+.put(async (req, res) => {
+    try {
+        await Article.updateOne(
+            {title: req.params.articleTitle},
+            {title: req.body.title, content: req.body.content},
+        );
+        res.send("Successfully updated");
+    } catch (err) {
+        res.send(err);
+    }
+});
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log("Server started at port " + PORT);
-})
+});
