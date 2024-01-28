@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import InputField from './components/InputField';
 import { Todo } from './model';
+import ToDoLists from './components/ToDoLists';
 
 const App:React.FC = () => {
   // let id: any; //not recommended
@@ -114,6 +115,7 @@ const App:React.FC = () => {
     <div className="App">
       <h1 className='heading'>Taskify</h1>
       <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd}  />
+      <ToDoLists todos={todos} setTodos={setTodos}/>
     </div>
   );
 }
