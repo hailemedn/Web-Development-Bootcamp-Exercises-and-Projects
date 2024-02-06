@@ -1,0 +1,15 @@
+form {
+    max-width: 298px;
+    margin: 2rem auto;
+}
+
+.list-group {
+    position: relative;
+}
+
+.float-right {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    top: 0;
+}

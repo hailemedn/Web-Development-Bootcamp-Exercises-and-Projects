@@ -16,7 +16,7 @@
           </li>
           <% foundCustomList.forEach(customList => { %>
             <li>
-              <a href="/<%= customList.name %>" class="nav-link link-body-emphasis">
+              <a href="/lists/<%= customList.name %>" class="nav-link link-body-emphasis">
                 <%= customList.name %>
               </a>
               <form action="/deleteList" method="post">
@@ -30,7 +30,7 @@
             </li>
           <% }) %>
           <hr>
-            <form action="/newList" method="post" class="input-container">
+            <form action="/lists/newList" method="post" class="input-container">
                 <div class="form-floating">
                   <input type="text" class="form-control" id="floatingNewItem" placeholder="Add a new List" name="newList">
                   <input type="hidden" name="list" value="<%= listTitle %>">

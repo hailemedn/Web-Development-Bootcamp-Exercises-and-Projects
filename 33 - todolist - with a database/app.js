@@ -7,15 +7,14 @@ const app = express();
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(express.static(__dirname + "/public"));
 
 main().catch((err) => {
   console.log(err);
 });
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/todolistDB2");
-
+  await mongoose.connect(process.env.MONGODB_URL + "/todolistDB2");
   const itemSchema = {
     name: String,
   };
@@ -53,7 +52,7 @@ async function main() {
     });
   });
 
-  app.get("/:customList", async (req, res) => {
+  app.get("/lists/:customList", async (req, res) => {
     const customList = _.capitalize(req.params.customList);
     const foundList = await List.findOne({ name: customList }).exec();
     const foundCustomList = await List.find({});
@@ -64,7 +63,7 @@ async function main() {
         items: defaultItems,
       });
       await list.save();
-      res.redirect("/" + customList);
+      res.redirect("/lists/" + customList);
     } else {
       console.log("List Exists");
       console.log(foundList);
@@ -88,7 +87,7 @@ async function main() {
       const foundList = await List.findOne({ name: currentList });
       foundList.items.push(newItem);
       await foundList.save();
-      res.redirect("/" + currentList);
+      res.redirect("/lists/" + currentList);
     }
   });
 
@@ -103,13 +102,13 @@ async function main() {
         { name: currentList },
         { $pull: { items: { _id: itemId } } }
       );
-      res.redirect("/" + currentList);
+      res.redirect("/lists/" + currentList);
     }
   });
 
-  app.post("/newList", async (req, res) => {
+  app.post("/lists/newList", async (req, res) => {
     const newList = _.capitalize(req.body.newList);
-    res.redirect("/" + newList);
+    res.redirect("/lists/" + newList);
   });
 
   app.post("/deleteList", async (req, res) => {
@@ -119,11 +118,13 @@ async function main() {
     if (currentList === "Today") {
       res.redirect("/");
     } else {
-      res.redirect("/" + currentList);
+      res.redirect("/lists/" + currentList);
     }
   });
 }
 
-app.listen("3000", () => {
-  console.log("Server started at port 3000!");
+const PORT = process.env.PORT;
+
+app.listen(PORT || 3000, () => {
+  console.log("Server is listening at port " + PORT);
 });
