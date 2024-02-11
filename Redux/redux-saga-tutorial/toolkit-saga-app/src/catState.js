@@ -20,5 +20,5 @@ export const catSlice = createSlice({
     }
 });
 
-export const { getCatsFetch, getCatsSuccess, getCatsFailure } = catState.actions;
+export const { getCatsFetch, getCatsSuccess, getCatsFailure } = catSlice.actions;
 export default catSlice.reducer;
