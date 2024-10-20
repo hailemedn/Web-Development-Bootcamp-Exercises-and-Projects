@@ -1,6 +1,8 @@
 //jshint esversion:6
 require('dotenv').config();
 
+const bcrypt = require("bcrypt")
+const saltRounds = 10;
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
@@ -52,23 +54,29 @@ async function main() {
 
 
     app.post("/register", async (req, res) => {
+
+        const hash = await bcrypt.hash(req.body.password, saltRounds);
+
+
         const newUser = new User({
             email: req.body.username,
-            password: md5(req.body.password),
+            password: hash,
         });
 
         await newUser.save();
         res.render("secrets")
     });
 
+
     app.post("/login", async (req, res) => {
         const username = req.body.username;
-        const password = md5(req.body.password);
+        const password = req.body.password;
 
         const foundUser = await User.findOne({ email: username });
 
         if (foundUser) {
-            if(foundUser.password === password) {
+            const match = bcrypt.compare(password, foundUser.password)
+            if(match) {
                 res.render("secrets")
             } else {
                 res.send("wrong password")
