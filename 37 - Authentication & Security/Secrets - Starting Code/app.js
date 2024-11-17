@@ -14,6 +14,7 @@ const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const findOrCreate = require("mongoose-findorcreate");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const ObjectId = mongoose.Types.ObjectId;
 
 const app = express();
 
@@ -43,6 +44,7 @@ async function main() {
     email: String,
     password: String,
     googleId: String,
+    secret: String,
   });
 
   userSchema.plugin(passportLocalMongoose);
@@ -114,9 +116,19 @@ async function main() {
   });
 
   // some comment
-  app.get("/secrets", (req, res) => {
+  app.get("/secrets", async (req, res) => {
     if (req.isAuthenticated()) {
-      res.render("secrets");
+      const secrets = await User.find({"secret": {$ne: null}});
+      console.log(secrets);
+      res.render("secrets", {secrets});
+    } else {
+      res.redirect("/login");
+    }
+  });
+
+  app.get("/submit", (req, res) => {
+    if (req.isAuthenticated()) {
+      res.render("submit");
     } else {
       res.redirect("/login");
     }
@@ -189,6 +201,48 @@ async function main() {
       }
     });
   });
+
+
+  // app.post("/submit", async (req, res) => {
+  //   const submittedSecret = req.body.secret;
+  //   const foundUser = await User.findById(req.user.id);
+  //   if(foundUser) {
+  //     foundUser.secret = submittedSecret;
+  //     await foundUser.save();
+  //     res.redirect("/secrets");
+  //   } else {
+  //     console.log("haven't found user dawg");
+  //   }
+  // });
+
+
+  app.post("/submit", async (req, res) => {
+    try {
+        const submittedSecret = req.body.secret;
+        console.log(req.user)
+        // Ensure `req.user` exists and contains a valid ID
+        if (!req.user || !mongoose.isValidObjectId(req.user.id)) {
+            return res.status(400).json({ error: "Invalid or missing user ID" });
+        }
+
+        // Fetch the user from the database
+        const foundUser = await User.findOne({_id: req.user.id});
+        if (!foundUser) {
+            console.log("User not found.");
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Update the user's secret
+        foundUser.secret = submittedSecret;
+        await foundUser.save();
+
+        // Redirect after successful update
+        res.redirect("/secrets");
+    } catch (error) {
+        console.error("Error updating user secret:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 
   app.listen(3000, () => {
     console.log("Server started  on port 3000.");
